@@ -1,0 +1,32 @@
+name: Assemble Android APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout APK chunks
+        uses: actions/checkout@v4
+
+      - name: Assemble APK
+        shell: bash
+        run: cat chunks/apk.part00 chunks/apk.part01 chunks/apk.part02 chunks/apk.part03 > hangzhou-trip.apk
+
+      - name: Verify APK size
+        shell: bash
+        run: test "$(stat -c%s hangzhou-trip.apk)" -eq 77267567
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete v0.1.1 --repo "$GITHUB_REPOSITORY" --yes 2>/dev/null || true
+          gh release create v0.1.1 hangzhou-trip.apk \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "杭州旅伴 Android v0.1.1" \
+            --notes "Android 安装包。包名：com.hangzhou.tripplanner。"
