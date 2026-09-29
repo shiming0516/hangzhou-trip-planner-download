@@ -15,19 +15,19 @@ jobs:
 
       - name: Assemble APK
         shell: bash
-        run: cat chunks-v020/apk.part* > hangzhou-trip-v0.2.0.apk
+        run: cat chunks-v021/apk.part* > hangzhou-trip-v0.2.1.apk
 
       - name: Verify APK
         shell: bash
         run: |
-          test "$(stat -c%s hangzhou-trip-v0.2.0.apk)" -eq 7089333
-          test "$(sha256sum hangzhou-trip-v0.2.0.apk | cut -d' ' -f1)" = "672e3af33bdac8a66a9349d6c572e16f8a8fa758dd70f77a6330c3c3d256f170"
+          test "$(stat -c%s hangzhou-trip-v0.2.1.apk)" -eq 7138646
+          test "$(sha256sum hangzhou-trip-v0.2.1.apk | cut -d' ' -f1)" = "ae79365784b200b3b85058a2e46a3afd9fca35d4ba18063076d02bc517d225d5"
 
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create v0.2.0 hangzhou-trip-v0.2.0.apk \
+          gh release create v0.2.1 hangzhou-trip-v0.2.1.apk \
             --repo "$GITHUB_REPOSITORY" \
-            --title "杭州旅伴 Android v0.2.0" \
-            --notes "统一手机与电脑端 PWA 界面，包含日程、备选方案、手绘地图、餐饮、提醒和外部预约/高德导航。包名：com.hangzhou.tripplanner。"
+            --title "杭州旅伴 Android v0.2.1" \
+            --notes "修复 Android WebView 加载 ES Module 导致的白屏；统一手机与电脑端 PWA 界面，包含日程、备选方案、手绘地图、餐饮、提醒和外部预约/高德导航。包名：com.hangzhou.tripplanner。"
