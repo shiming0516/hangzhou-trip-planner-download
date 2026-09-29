@@ -15,18 +15,19 @@ jobs:
 
       - name: Assemble APK
         shell: bash
-        run: cat chunks/apk.part00 chunks/apk.part01 chunks/apk.part02 chunks/apk.part03 > hangzhou-trip.apk
+        run: cat chunks-v020/apk.part* > hangzhou-trip-v0.2.0.apk
 
-      - name: Verify APK size
+      - name: Verify APK
         shell: bash
-        run: test "$(stat -c%s hangzhou-trip.apk)" -eq 77267567
+        run: |
+          test "$(stat -c%s hangzhou-trip-v0.2.0.apk)" -eq 7089333
+          test "$(sha256sum hangzhou-trip-v0.2.0.apk | cut -d' ' -f1)" = "672e3af33bdac8a66a9349d6c572e16f8a8fa758dd70f77a6330c3c3d256f170"
 
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete v0.1.1 --repo "$GITHUB_REPOSITORY" --yes 2>/dev/null || true
-          gh release create v0.1.1 hangzhou-trip.apk \
+          gh release create v0.2.0 hangzhou-trip-v0.2.0.apk \
             --repo "$GITHUB_REPOSITORY" \
-            --title "杭州旅伴 Android v0.1.1" \
-            --notes "Android 安装包。包名：com.hangzhou.tripplanner。"
+            --title "杭州旅伴 Android v0.2.0" \
+            --notes "统一手机与电脑端 PWA 界面，包含日程、备选方案、手绘地图、餐饮、提醒和外部预约/高德导航。包名：com.hangzhou.tripplanner。"
